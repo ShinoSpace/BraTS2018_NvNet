@@ -57,6 +57,7 @@ def convert_image_format(in_file, out_file):
 def window_intensities(in_file, out_file, min_percent=1, max_percent=99):
     image = sitk.ReadImage(in_file)
     image_data = sitk.GetArrayFromImage(image)
+    # 像素范围限制在(min, max)之间，其中min = np.percentile(image_data, min_percent), max =  np.percentile(image_data, max_percent)
     out_image = sitk.IntensityWindowing(image, np.percentile(image_data, min_percent), np.percentile(image_data,
                                                                                                      max_percent))
     sitk.WriteImage(out_image, out_file)
