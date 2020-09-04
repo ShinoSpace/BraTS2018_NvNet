@@ -39,6 +39,8 @@ def get_background_mask(in_folder, out_file,truth_name=_truth):
         image = sitk.ReadImage(get_image(in_folder, name))
         if background_image:
             if name == truth_name and not (image.GetOrigin() == background_image.GetOrigin()):
+                # SimpleITK的图像是在绝对坐标空间下的，因此具备绝对坐标原点(可以不在(0,0,...)位置)，像素空间间距，仿射变换矩阵等概念。
+                # 因此两张图片做比较时，必须将他们的原点标定在同一位置。
                 image.SetOrigin(background_image.GetOrigin())
             background_image = sitk.And(image == 0, background_image)
         else:
