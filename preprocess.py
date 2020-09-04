@@ -45,7 +45,7 @@ def get_background_mask(in_folder, out_file,truth_name=_truth):
             background_image = sitk.And(image == 0, background_image)
         else:
             background_image = image == 0   # 只有循环的第一次才被执行
-    sitk.WriteImage(background_image, out_file)
+    sitk.WriteImage(background_image, out_file)     # 将background_image写到out_file路径位置
     return os.path.abspath(out_file)
 
 
