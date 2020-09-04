@@ -28,7 +28,7 @@ def append_basename(in_file, append):
 
 def get_background_mask(in_folder, out_file,truth_name=_truth):
     """
-    This function computes a common background mask for all of the data in a subject folder.
+    This function computes a common background mask for all of the data in a subject folder.(所有模态公共的背景作为背景区域)
     :param in_folder: a subject folder from the BRATS dataset.
     :param out_file: an image containing a mask that is 1 where the image data for that subject contains the background.
     :param truth_name: how the truth file is labeled int he subject folder
