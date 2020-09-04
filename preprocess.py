@@ -42,7 +42,7 @@ def get_background_mask(in_folder, out_file,truth_name=_truth):
                 # SimpleITK的图像是在绝对坐标空间下的，因此具备绝对坐标原点(可以不在(0,0,...)位置)，像素空间间距，仿射变换矩阵等概念。
                 # 因此两张图片做比较时，必须将他们的原点标定在同一位置。
                 image.SetOrigin(background_image.GetOrigin())
-            background_image = sitk.And(image == 0, background_image)
+            background_image = sitk.And(image == 0, background_image)   # 不同模态，取公共的背景
         else:
             background_image = image == 0   # 只有循环的第一次才被执行
     sitk.WriteImage(background_image, out_file)     # 将background_image写到out_file路径位置
