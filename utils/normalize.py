@@ -63,7 +63,10 @@ def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance
 
 
 def normalize_data(data, mean, std):
-    data -= mean[:, np.newaxis, np.newaxis, np.newaxis]
+    '''对shape=[N,D,H,W]的数据data执行z-score normalize.
+       mean, std是N维向量，每个元素对应data中一张图片的均值和方差。
+    '''
+    data -= mean[:, np.newaxis, np.newaxis, np.newaxis]     # shape of mean: (N,) → (N,1,1,1), std同理
     data /= std[:, np.newaxis, np.newaxis, np.newaxis]
     return data
 
@@ -73,7 +76,7 @@ def normalize_data_storage(data_storage):
     stds = list()
     for index in range(data_storage.shape[0]):
         data = data_storage[index]
-        means.append(data.mean(axis=(1, 2, 3)))
+        means.append(data.mean(axis=(1, 2, 3))) # 对axis=1,2,3的所有数据执行mean，相当于先执行data.reshape(data.size(0), -1), 然后对reshape后axis=1执行mean. 
         stds.append(data.std(axis=(1, 2, 3)))
     mean = np.asarray(means).mean(axis=0)
     std = np.asarray(stds).mean(axis=0)
