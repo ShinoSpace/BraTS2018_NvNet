@@ -66,7 +66,7 @@ def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance
 
         foreground[is_foreground] = 1   # 所有模态前景部分的并集被认为是最终的前景
     if return_image:
-        return new_img_like(image, foreground)
+        return new_img_like(image, foreground)  # 应该是create一个与第一个参数image同类型的新对象, 新对象存储的数据是第二个参数foreground(ndarray类型对象). 上同。
     else:
         return foreground
 
