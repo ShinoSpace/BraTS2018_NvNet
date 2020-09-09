@@ -50,12 +50,13 @@ def get_complete_foreground(training_data_files):
 def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance=0.00001, return_image=False):
     for i, image_file in enumerate(set_of_files):
         image = read_image(image_file)
+        # background_value ± tolerance的部分被认为是背景部分
         is_foreground = np.logical_or(image.get_data() < (background_value - tolerance),
                                       image.get_data() > (background_value + tolerance))
         if i == 0:
             foreground = np.zeros(is_foreground.shape, dtype=np.uint8)
 
-        foreground[is_foreground] = 1
+        foreground[is_foreground] = 1   # 所有模态前景部分的并集被认为是最终的前景
     if return_image:
         return new_img_like(image, foreground)
     else:
