@@ -38,7 +38,7 @@ def reslice_image_set(in_files, image_shape, out_files=None, label_indices=None,
 # Done
 def get_complete_foreground(training_data_files):
     ''' 遍历training_data_files(似乎是一个list, 每个元素又是一个list, 每个子list内存储数量相同的图像文件的路径。)，提取所有文件的前景并集。
-        示例：training_data_files似乎应该是[[image_1_path, ..., image_m_path],[image_m+1_path, ..., image_2m_path], ...]
+        示例：training_data_files似乎应该类似于[[image_1_path, ..., image_m_path],[image_m+1_path, ..., image_2m_path], ...]
     '''
     for i, set_of_files in enumerate(training_data_files):
         # 似乎set_of_files被赋值为类似[image_1_path, ..., image_m_path]这样的path list.
@@ -53,7 +53,7 @@ def get_complete_foreground(training_data_files):
 # Done
 def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance=0.00001, return_image=False):
     ''' 遍历set_of_files(每个元素大概是存储文件路径的list?)，读取相应文件，提取所有文件前景区域的并集
-        示例：set_of_files应该类似于：[image_1_path, ..., image_m_path]
+        示例：set_of_files似乎应该类似于[image_1_path, ..., image_m_path]
     '''
     for i, image_file in enumerate(set_of_files):
         image = read_image(image_file)
