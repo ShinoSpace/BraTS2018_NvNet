@@ -7,8 +7,8 @@ from .nilearn_custom_utils.nilearn_utils import crop_img_to, crop_img
 
 
 def find_downsized_info(training_data_files, input_shape):
-    foreground = get_complete_foreground(training_data_files)
-    crop_slices = crop_img(foreground, return_slices=True, copy=True)
+    foreground = get_complete_foreground(training_data_files)   # 得到所有图像前景并集的mask, 不是numpy数组，而是包装成了nilearn的image类型的对象
+    crop_slices = crop_img(foreground, return_slices=True, copy=True)   # crop掉前景mask为零的区域，似乎在crop后还会做一个像素的0 padding
     cropped = crop_img_to(foreground, crop_slices, copy=True)
     final_image = resize(cropped, new_shape=input_shape, interpolation="nearest")
     return crop_slices, final_image.affine, final_image.header
@@ -37,7 +37,7 @@ def reslice_image_set(in_files, image_shape, out_files=None, label_indices=None,
 
 # Done
 def get_complete_foreground(training_data_files):
-    ''' 遍历training_data_files(似乎是一个list, 每个元素又是一个list, 每个子list内存储若干图像文件的路径)，提取所有文件的前景并集。
+    ''' 遍历training_data_files(似乎是一个list, 每个元素又是一个list, 每个子list内存储若干图像文件的路径)，找到所有文件的前景并集，生成并返回一个mask, 前景区域为1, 背景为0。
         示例：training_data_files似乎应该类似于[[image_1_path, ..., image_m_path], [image_m+1_path, ..., image_m+k_path], ...]
     '''
     for i, set_of_files in enumerate(training_data_files):
@@ -48,7 +48,7 @@ def get_complete_foreground(training_data_files):
         else:
             foreground[subject_foreground > 0] = 1
 
-    return new_img_like(read_image(training_data_files[0][-1]), foreground)
+    return new_img_like(read_image(training_data_files[0][-1]), foreground)     # 返回的不是numpy数组，而是做成nilearn的image类型的对象
 
 # Done
 def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance=0.00001, return_image=False):
