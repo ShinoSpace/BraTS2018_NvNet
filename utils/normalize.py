@@ -52,7 +52,7 @@ def get_complete_foreground(training_data_files):
 
 # Done
 def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance=0.00001, return_image=False):
-    ''' 遍历set_of_files(每个元素大概是存储文件路径的list?)，读取相应文件，提取所有文件前景区域的并集
+    ''' 遍历set_of_files(每个元素大概是存储文件路径的list?)，读取相应文件，找到所有文件前景区域的并集，生成并返回一个mask, 前景区域为1, 背景为0。
         示例：set_of_files似乎应该类似于[image_1_path, ..., image_m_path]
     '''
     for i, image_file in enumerate(set_of_files):
@@ -65,7 +65,7 @@ def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance
         if i == 0:
             foreground = np.zeros(is_foreground.shape, dtype=np.uint8)
 
-        foreground[is_foreground] = 1   # 所有模态前景部分的并集被认为是最终的前景
+        foreground[is_foreground] = 1   # 所有模态前景部分的并集被认为是最终的前景，生成一个mask，值为1的像素对应前景部分
     if return_image:
         return new_img_like(image, foreground)  # 应该是create一个与第一个参数image同类型的新对象, 新对象存储的数据由第二个参数foreground(ndarray类型对象)给出。上同。
     else:
