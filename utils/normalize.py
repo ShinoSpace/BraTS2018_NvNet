@@ -37,8 +37,8 @@ def reslice_image_set(in_files, image_shape, out_files=None, label_indices=None,
 
 # Done
 def get_complete_foreground(training_data_files):
-    ''' 遍历training_data_files(似乎是一个list, 每个元素又是一个list, 每个子list内存储数量相同的图像文件的路径。)，提取所有文件的前景并集。
-        示例：training_data_files似乎应该类似于[[image_1_path, ..., image_m_path],[image_m+1_path, ..., image_2m_path], ...]
+    ''' 遍历training_data_files(似乎是一个list, 每个元素又是一个list, 每个子list内存储若干图像文件的路径)，提取所有文件的前景并集。
+        示例：training_data_files似乎应该类似于[[image_1_path, ..., image_m_path], [image_m+1_path, ..., image_m+k_path], ...]
     '''
     for i, set_of_files in enumerate(training_data_files):
         # 似乎set_of_files被赋值为类似[image_1_path, ..., image_m_path]这样的path list.
@@ -56,6 +56,7 @@ def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance
         示例：set_of_files似乎应该类似于[image_1_path, ..., image_m_path]
     '''
     for i, image_file in enumerate(set_of_files):
+        # image_file被赋值为文件路径
         image = read_image(image_file)
         # 灰度值小于background_value - tolerance或大于background_value + tolerance的部分被认为是前景部分
         # 即认为背景灰度值在[background_value - tolerance, background_value + tolerance]范围内 
@@ -81,6 +82,9 @@ def normalize_data(data, mean, std):
 
 # Done
 def normalize_data_storage(data_storage):
+    ''' 对一组数据(可以理解为一个batch)执行z-score normalize
+        data_storage可能是存储若干张图片的list, 类似于[image_1, image_2, ...], 对3D图像，shape of data_storage = [N, D, H, W]
+    '''
     means = list()
     stds = list()
     for index in range(data_storage.shape[0]):
