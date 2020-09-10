@@ -33,8 +33,8 @@ def crop_img(img, rtol=1e-8, copy=True, return_slices=False):
     infinity_norm = max(-data.min(), data.max())
     passes_threshold = np.logical_or(data < -rtol * infinity_norm,
                                      data > rtol * infinity_norm)
-    if data.ndim == 4:
-        passes_threshold = np.any(passes_threshold, axis=-1)
+    if data.ndim == 4:  # data: ndarray, ndim是看data总共有几维，即data.ndim == len(data.shape)
+        passes_threshold = np.any(passes_threshold, axis=-1)    # 沿着指定维是否有true
     coords = np.array(np.where(passes_threshold))
     start = coords.min(axis=1)
     end = coords.max(axis=1) + 1
