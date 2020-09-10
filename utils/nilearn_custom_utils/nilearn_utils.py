@@ -31,11 +31,14 @@ def crop_img(img, rtol=1e-8, copy=True, return_slices=False):
     img = check_niimg(img)
     data = img.get_data()
     infinity_norm = max(-data.min(), data.max())
+    # 不妨设infinity_norm = 255
+    # passes_threshold可以视为一种mask, 数据data灰度值满足gray < -(1e-8 * 255) 或 gray > 1e-8 * 255的像素，在mask中为True
     passes_threshold = np.logical_or(data < -rtol * infinity_norm,
                                      data > rtol * infinity_norm)
     if data.ndim == 4:  # data: ndarray, ndim是看data总共有几维，即data.ndim == len(data.shape)
-        passes_threshold = np.any(passes_threshold, axis=-1)    # 沿着指定维是否有true
-    coords = np.array(np.where(passes_threshold))
+        # 4D图像，沿着最后一维（各行横向遍历）检查是否有true. 这部分目的是检查每行是否有前景像素。
+        passes_threshold = np.any(passes_threshold, axis=-1)    # check沿着指定维是否有true.
+    coords = np.array(np.where(passes_threshold))   # 拿到前景像素的坐标/索引
     start = coords.min(axis=1)
     end = coords.max(axis=1) + 1
 
