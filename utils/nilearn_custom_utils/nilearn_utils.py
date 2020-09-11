@@ -28,7 +28,7 @@ def crop_img(img, rtol=1e-8, copy=True, return_slices=False):
         Cropped version of the input image
     """
 
-    img = check_niimg(img)
+    img = check_niimg(img)  # 传入的是单张图像。在utils/normalize.py的find_downsized_info函数中调用，将数据的前景并集mask作为实参传给img
     data = img.get_data()
     infinity_norm = max(-data.min(), data.max())
     # 不妨设infinity_norm = 255
