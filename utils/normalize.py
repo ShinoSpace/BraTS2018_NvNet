@@ -42,7 +42,7 @@ def get_complete_foreground(training_data_files):
     '''
     for i, set_of_files in enumerate(training_data_files):
         # 似乎set_of_files被赋值为类似[image_1_path, ..., image_m_path]这样的path list.
-        subject_foreground = get_foreground_from_set_of_files(set_of_files)
+        subject_foreground = get_foreground_from_set_of_files(set_of_files)     # 默认情况(return_image==False)，返回ndarray类型的mask
         if i == 0:
             foreground = subject_foreground
         else:
