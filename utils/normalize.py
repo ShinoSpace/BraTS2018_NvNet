@@ -48,7 +48,7 @@ def get_complete_foreground(training_data_files):
         else:
             foreground[subject_foreground > 0] = 1
 
-    return new_img_like(read_image(training_data_files[0][-1]), foreground)     # 返回的不是numpy数组，而是做成nilearn的image类型的对象。维度与传进来的图像维度相同。
+    return new_img_like(read_image(training_data_files[0][-1]), foreground)     # 返回的不是numpy数组，而是做成nilearn的image类型的对象。mask维度与传进来的**单张**图像维度相同。
 
 # Done
 def get_foreground_from_set_of_files(set_of_files, background_value=0, tolerance=0.00001, return_image=False):
