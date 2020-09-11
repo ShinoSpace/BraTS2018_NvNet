@@ -31,19 +31,20 @@ def crop_img(img, rtol=1e-8, copy=True, return_slices=False):
     img = check_niimg(img)  # 传入的是单张图像。在utils/normalize.py的find_downsized_info函数中调用，将数据的前景并集mask作为实参传给img
     data = img.get_data()
     infinity_norm = max(-data.min(), data.max())
-    # 不妨设infinity_norm = 255
-    # passes_threshold可以视为一种mask, 数据data灰度值满足gray < -(1e-8 * 255) 或 gray > 1e-8 * 255的像素，在mask中为True
+    # 不妨设infinity_norm = 1 (比如调用时传进来的mask就是一个0-1的前景mask)
+    # passes_threshold可以视为一种mask, 数据data灰度值gray满足 gray < -(1e-8) or gray > 1e-8 的像素，在mask中为True
     passes_threshold = np.logical_or(data < -rtol * infinity_norm,
                                      data > rtol * infinity_norm)
     if data.ndim == 4:  # data: ndarray, ndim是看data总共有几维，即data.ndim == len(data.shape)
         # 4D图像，沿着最后一维（各行横向遍历）检查是否有true. 这部分目的是检查每行是否有前景像素。
         passes_threshold = np.any(passes_threshold, axis=-1)    # check沿着指定维是否有true.
     coords = np.array(np.where(passes_threshold))   # 拿到前景像素的坐标/索引
-    start = coords.min(axis=1)
-    end = coords.max(axis=1) + 1
+    start = coords.min(axis=1)      # 对非零像素坐标，分别取各维的最小值
+    end = coords.max(axis=1) + 1    # 对非零像素坐标，分别取各维的最大值
 
     # pad with one voxel to avoid resampling problems
-    start = np.maximum(start - 1, 0)
+    # 下面这两行是在进行越界检查
+    start = np.maximum(start - 1, 0)    # 标量0会广播地与start-1比较，取最大
     end = np.minimum(end + 1, data.shape[:3])
 
     slices = [slice(s, e) for s, e in zip(start, end)]
