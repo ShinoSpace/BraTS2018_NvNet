@@ -39,6 +39,7 @@ def crop_img(img, rtol=1e-8, copy=True, return_slices=False):
         # 4D图像，沿着最后一维（各行横向遍历）检查是否有true. 这部分目的是检查每行是否有前景像素。
         passes_threshold = np.any(passes_threshold, axis=-1)    # check沿着指定维是否有true.
     coords = np.array(np.where(passes_threshold))   # 拿到前景像素的坐标/索引，是一个二维矩阵，coords[0], coords[1], coords[2]都是一个数组，数组内元素是axis=0, 1, 2的索引。
+    # 下两行达到的目的：start和end都是三个值，索引从0到2分别对应具备非零像素的切片，行和列的最小值start和最大值end
     start = coords.min(axis=1)      # 对非零像素坐标，分别取各维的最小值。结果是一个包含3个值的vector, start[0]是非零像素索引中，axis=0的索引最小值。start[1], start[2]同理。
     end = coords.max(axis=1) + 1    # 对非零像素坐标，分别取各维的最大值。结果意义与上一行同理。
 
