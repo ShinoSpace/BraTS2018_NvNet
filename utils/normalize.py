@@ -7,9 +7,9 @@ from .nilearn_custom_utils.nilearn_utils import crop_img_to, crop_img
 
 
 def find_downsized_info(training_data_files, input_shape):
-    foreground = get_complete_foreground(training_data_files)   # 得到所有图像前景并集的mask, 不是numpy数组，而是包装成了nilearn的image类型的对象
-    crop_slices = crop_img(foreground, return_slices=True, copy=True)   # crop掉前景mask为零的区域，似乎在crop后还会做一个像素的0 padding
-    cropped = crop_img_to(foreground, crop_slices, copy=True)
+    foreground = get_complete_foreground(training_data_files)   # 得到所有图像前景并集的mask, 不是numpy数组，而是包装成了nilearn的image类型的对象。
+    crop_slices = crop_img(foreground, return_slices=True, copy=True)   # crop掉前景mask为零的区域，额外在外圈保留一圈零。return_slice=True表示返回的是三维索引的切片对象列表。
+    cropped = crop_img_to(foreground, crop_slices, copy=True)   # 根据上一行的crop_slices对图像foreground进行切片。
     final_image = resize(cropped, new_shape=input_shape, interpolation="nearest")
     return crop_slices, final_image.affine, final_image.header
 
